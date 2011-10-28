@@ -81,8 +81,14 @@ task read_test_data;
                 rbsp_data[i] = 1'b0;
             else if (ch == 8'h31)
                 rbsp_data[i] = 1'b1;
-            else
-                $display("rbsp error!\n");
+            else 
+            begin
+		        $fclose(fp_r);
+		        $fclose(fp_w);
+		        $display(" >> end of file @ %d", $time);
+		        $display(" >> tested cavlc blocks : %d", blk_num);
+		        $finish;
+            end
         end
         ch  = $fgetc(fp_r);
     end
@@ -154,7 +160,7 @@ cavlc_top dut(
 
 parameter
 	Tp = 3,
-	TestBlockNum = 1000;	//number of cavlc blocks to test
+	TestBlockNum = 10000;	//number of cavlc blocks to test
 
 //-----------------------------------------------------------------------------
 // clock and reset
@@ -228,13 +234,6 @@ begin
     blk_num = 0;
     while(blk_num < TestBlockNum)
     begin
-        if ($feof(fp_r) == 1)
-        begin
-	        $fclose(fp_r);
-	        $fclose(fp_w);
-	        $display(" >> end of file @ %d", $time);
-	        $finish;
-        end
         read_test_data;
         nC =  nC_t;
         max_coeff_num =  max_coeff_num_t;
