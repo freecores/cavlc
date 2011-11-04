@@ -197,7 +197,7 @@ begin
    forever
    begin
       @(posedge clk);
-      start = 1;
+      start = #Tp 1;
       @(posedge clk);
       start = #Tp 0;   //start must be high for one cycle
       @(posedge valid);
